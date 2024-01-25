@@ -27,8 +27,8 @@ def eye_aspect_ratio(eye):
 # Function to detect drowsiness in a video stream
 def detect_drowsiness():
     # Paths and configurations
-    shape_predictor_path = "V:\Drowsiness_Detect_Guard\shape_predictor_68_face_landmarks.dat"
-    alarm_sound_path = "V:\Drowsiness_Detect_Guard\wake_up.mp3"
+    shape_predictor_path = "path of shape_predictor_68_face_landmarks.dat"
+    alarm_sound_path = "path of alarm"
     webcam_index = 0
 
     # Drowsiness detection parameters

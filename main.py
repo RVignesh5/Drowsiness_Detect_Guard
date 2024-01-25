@@ -1,3 +1,4 @@
+# Importing necessary libraries
 from scipy.spatial import distance as dist
 from imutils.video import VideoStream
 from imutils import face_utils
@@ -9,11 +10,13 @@ import time
 import dlib
 import cv2
 
+# Function to play a sound alarm using pygame
 def sound_alarm(path):
-    pygame.mixer.init()
-    pygame.mixer.music.load(path)
-    pygame.mixer.music.play()
+    pygame.mixer.init()  # Initialize the pygame mixer
+    pygame.mixer.music.load(path)  # Load the alarm sound file
+    pygame.mixer.music.play()  # Play the alarm sound
 
+# Function to calculate the eye aspect ratio (EAR) for detecting drowsiness
 def eye_aspect_ratio(eye):
     A = dist.euclidean(eye[1], eye[5])
     B = dist.euclidean(eye[2], eye[4])
@@ -21,30 +24,34 @@ def eye_aspect_ratio(eye):
     ear = (A + B) / (2.0 * C)
     return ear
 
+# Function to detect drowsiness in a video stream
 def detect_drowsiness():
+    # Paths and configurations
     shape_predictor_path = "V:\Drowsiness_Detect_Guard\shape_predictor_68_face_landmarks.dat"
     alarm_sound_path = "V:\Drowsiness_Detect_Guard\wake_up.mp3"
     webcam_index = 0
 
+    # Drowsiness detection parameters
     EYE_AR_THRESH = 0.3
     EYE_AR_CONSEC_FRAMES = 48
     COUNTER = 0
     ALARM_ON = False
     LAST_DETECTION = time.time()
 
-    print("[INFO] loading facial landmark predictor...")
+    # Initialize dlib's face detector and facial landmark predictor
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(shape_predictor_path)
     (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
     (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
-    print("[INFO] starting video stream thread...")
+    # Start the video stream
     vs = VideoStream(src=webcam_index).start()
     time.sleep(1.0)
     
-    pygame.mixer.init()
+    pygame.mixer.init()  # Initialize the pygame mixer
     
     while True:
+        # Capture a frame and perform necessary pre-processing
         frame = vs.read()
         frame = imutils.resize(frame, width=450)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -60,11 +67,13 @@ def detect_drowsiness():
             rightEAR = eye_aspect_ratio(rightEye)
             ear = (leftEAR + rightEAR) / 2.0
 
+            # Draw contours around eyes on the frame
             leftEyeHull = cv2.convexHull(leftEye)
             rightEyeHull = cv2.convexHull(rightEye)
             cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
             cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
+            # Check for drowsiness based on EAR
             if ear < EYE_AR_THRESH:
                 COUNTER += 1
                 if COUNTER >= EYE_AR_CONSEC_FRAMES:

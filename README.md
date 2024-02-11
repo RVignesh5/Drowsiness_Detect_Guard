@@ -1,5 +1,9 @@
  # Drowsiness_Detect_Guard
  This Python script implements a real-time drowsiness detection system using computer vision techniques. The program utilizes the dlib library for facial landmark detection and calculates the Eye Aspect Ratio (EAR) to determine if a person is showing signs of drowsiness.
+ [![SCtMn.gif](https://s13.gifyu.com/images/SCtMn.gif)](https://gifyu.com/image/SCtMn)
+
+
+
 # Dependencies:
 - numpy
 - pygame-for sound alarm
